@@ -1,0 +1,155 @@
+﻿@using CourseWork.Models
+@model IEnumerable<CourseWork.Models.TaskViewModel>
+
+@{
+    bool a = true;
+    string[] strings = new string[] { "Главная страница", "Автор", "Дата создания", "Рейтинг", "Перейти", "Оценка" };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        strings = a ? strings : new string[] { "Main page", "Author", "Date of creation", "Rating", "Go over", "Rating" };
+    }
+    ViewBag.Title = strings[0];
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+<div class="page-item">
+    <div class="jumbotron">
+        @foreach (TaskViewModel m in Model)
+        {
+            <div class="content rounded">
+                <div class="navbar navbar-expand-lg">
+                    <div class="navbar-collapse header-content">
+                        <ul class="navbar-nav">
+                            <li class="content-top">@strings[1]  @m.CreaterName</li>
+                            <li class="content-top">@strings[2]</li>
+                            <li class="content-top"> @m.Date</li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="score d-md-none">@strings[3]</li>
+                            <li class="score">@m.Rait</li>
+                            <li class="rating-result d-none d-md-block">
+                                @for (int i = 1; i <= Convert.ToInt32(m.Rait); i++)
+                                {
+                                    <span class="active"></span>
+                                }
+                                @for (int i = Convert.ToInt32(m.Rait); i < 5; i++)
+                                {
+                                    <span></span>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                @*<div class="hashtags"></div>*@
+                <div class="textDiv">
+                    @m.TaskTexst
+                </div>
+                <div class="img-wrap">
+                    @foreach (string str in m.Pictures)
+                    {
+                        if (str != "")
+                        {
+                            <img src="@str" class="img-fluid" alt="Responsive image" />
+                        }
+                    }
+                </div>
+                <div class="navbar navbar-expand-lg">
+                    <div class="navbar-collapse header-content">
+                        <ul class="navbar-nav">
+                            <li class="content-top"> @Html.ActionLink(strings[4], "Look", "Tasks", new { UserTaskId = m.TaskId },new { @class= "btn btn-secondary" })</li>
+                        </ul>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <ul class="navbar-nav">
+                                <li class="score d-md-none">@strings[5]</li>
+                                <li class="rating-area list-inline-item">
+                                    @for (int i = 5; i > 0; i--)
+                                    {
+                                        if (i == m.UserRait)
+                                        {
+                                            <input type="radio" id="star @i @m.TaskId" name="rating @m.TaskId" value="5" checked onclick="sendRait(@m.TaskId,@i,@a)">
+                                            <label for="star @i @m.TaskId" title="@strings[5] «@i»"></label>
+                                        }
+                                        else
+                                        {
+                                            <input type="radio" id="star @i @m.TaskId" name="rating @m.TaskId" value="5" onclick="sendRait(@m.TaskId,@i,@a)">
+                                            <label for="star @i @m.TaskId" title="@strings[5] «@i»"></label>
+                                        }
+                                    }
+                                </li>
+                            </ul>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+@*<div class="jumbotron">
+        <h1>ASP.NET</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    </div>*@
+@*<div id="DropArea">
+    drop here
+</div>
+<h4>Upload</h4>
+<ul class="list-group" id="UploadList">
+</ul>*@
+<style>
+    #DropArea {
+        background: #b5b5b5;
+        border: black dashed 1px;
+        height: 50px;
+        text-align: center;
+        color: #fff;
+        padding-top: 12px;
+    }
+
+    .active-drop {
+        background: #77bafa !important;
+        border: solid 2px blue !important;
+        opacity: .5;
+        color: black !important;
+    }
+</style>
+@section Scripts{
+    <script src="~/Scripts/jquery.filedrop.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#DropArea').filedrop({
+                url: '@Url.Action("UploadFiles")',
+                allowedfiletypes: ['image/jpeg', 'image/png', 'image/gif'],
+                allowedfileextensions: ['.jpg', '.jpeg', '.png', '.gif'],
+                paramname: 'files',
+                maxfiles: 3,
+                maxfilesize: 5, // in MB
+                dragOver: function () {
+                    $('#DropArea').addClass('active-drop');
+                },
+                dragLeave: function () {
+                    $('#DropArea').removeClass('active-drop');
+                },
+                drop: function () {
+                    $('#DropArea').removeClass('active-drop');
+                },
+                afterAll: function (e) {
+                    $('#DropArea').html('file(s) uploaded successfully');
+                },
+                uploadFinished: function (i, file, response, time) {
+                    $('#UploadList').append('<li class="list-group-item">'+file.name+'</li>'+response)
+                }
+            })
+        })
+    </script>
+}

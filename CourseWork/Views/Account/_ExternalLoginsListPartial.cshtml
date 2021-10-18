@@ -1,0 +1,36 @@
+﻿@model CourseWork.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+@{ 
+    bool a = true;
+    string[] strings = new string[] { "Произошла ошибка на сервере, пожалуйста напишите об этом администратору!", "Войти с помощью учетной записи", "Используйте для входа внешнюю службу." };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        strings = a ? strings : new string[] { "An error has occurred on the server, please write to the administrator about it!", "Log in with an account", "Use an external service to log in." };
+    }
+}
+<h4>@strings[2]</h4>
+<hr />
+@{
+
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0) {
+        <div>
+            <p>
+                @strings[0]
+            </p>
+        </div>
+    }
+    else {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl })) {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList">
+                <p>
+                    @foreach (AuthenticationDescription p in loginProviders) {
+                        <button type="submit" class="btn btn-outline-dark my-2 my-sm-0" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="@strings[1] @p.Caption">@p.AuthenticationType</button>
+                    }
+                </p>
+            </div>
+        }
+    }
+}

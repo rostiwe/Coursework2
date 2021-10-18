@@ -1,0 +1,96 @@
+﻿@model CourseWork.Models.ExternalLoginConfirmationViewModel
+@{
+    //foreach (var a in Context.Request.QueryString)
+    //{
+
+    //}
+    bool a = true;
+    string[] strings = new string[5];
+    strings[0] = "Регистрация";
+    strings[1] = "Форма связывания";
+    strings[2] = "Вы успешно прошли проверку подлинности с помощью ";
+    strings[3] = "\nВведите имя пользователя на этом сайте ниже и нажмите кнопку \"Зарегистрировать\", чтобы завершить вход.";
+    strings[4] = "Имя";
+
+
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        if (!a)
+        {
+            strings[0] = "Registration";
+            strings[1] = "Linking your Account";
+            strings[2] = "You have successfully authenticated with ";
+            strings[3] = "\nEnter the username on this site below and click the \"Registration\" button to complete entrance.";
+            strings[4] = "Name";
+
+        }
+    }
+}
+
+@{
+    ViewBag.Title = strings[0];
+    using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <h4>@strings[1]</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <p class="text-info">
+            @strings[2]<strong>@ViewBag.LoginProvider</strong>@strings[3]
+        </p>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="Email">Email</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+
+            </div>
+            <label class="col-md-2 control-label" for="Name">@strings[4]</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" class="btn btn-default" value="Регистрация" />*@
+                <button type="submit" class="btn btn-primary">@strings[0]</button>
+            </div>
+        </div>
+    }
+}
+@*<h2>@ViewBag.Title.</h2>
+    <h3>Связывание вашей учетной записи @ViewBag.LoginProvider.</h3>*@
+
+@*@using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <h4>Форма связывания</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <p class="text-info">
+            Вы успешно прошли проверку подлинности с помощью <strong>@ViewBag.LoginProvider</strong>
+            Введите имя пользователя на этом сайте ниже и нажмите кнопку "Зарегистрировать", чтобы завершить
+            вход.
+        </p>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Регистрация" />
+            </div>
+        </div>
+    }*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

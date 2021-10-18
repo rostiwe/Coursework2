@@ -1,0 +1,27 @@
+﻿@{
+    bool a = true;
+    string[] strings = new string[] {"Мои задачи", "Новая задача", "Список ваших задач пуст!"};
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        strings = a ? strings : new string[] { "My tasks","New task", "Your task list is empty!" };
+    }
+    ViewBag.Title = strings[0];
+}
+<div class="jumbotron">
+    <h1 class="text-center">@strings[0]</h1>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">@strings[1] &raquo;</a></p>
+    @{
+        if (false)
+        {
+
+        }
+        else
+        {
+            <p class="text-center">@strings[2]</p>
+        }
+
+    }
+
+</div>
+

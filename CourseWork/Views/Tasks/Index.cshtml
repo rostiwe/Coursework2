@@ -1,0 +1,97 @@
+﻿@model IEnumerable<CourseWork.Models.TaskViewModel>
+@using CourseWork.Models
+
+@{
+    bool a = true;
+    string[] strings = new string[] { "Мои задачи", "Автор", "Дата создания", "Рейтинг", "Перейти", "Оценка","Создать новую" };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        strings = a ? strings : new string[] { "My tasks", "Author", "Date of creation", "Rating", "Go over", "Rating","Create New" };
+    }
+    ViewBag.Title = strings[0];
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<p>
+    @Html.ActionLink(strings[6], "CreateNewTask", null, new { @class = "btn btn-secondary" })
+</p>
+<div class="page-item">
+    <div class="jumbotron">
+        @foreach (TaskViewModel m in Model)
+        {
+            <div class="content rounded">
+                <div class="navbar navbar-expand-lg">
+                    <div class="navbar-collapse header-content">
+                        <ul class="navbar-nav">
+                            <li class="content-top">@strings[1]  @m.CreaterName</li>
+                            <li class="content-top">@strings[2]</li>
+                            <li class="content-top"> @m.Date</li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="score d-md-none">@strings[3]</li>
+                            <li class="score">@m.Rait</li>
+                            <li class="rating-result d-none d-md-block">
+                                @for (int i = 1; i <= Convert.ToInt32(m.Rait); i++)
+                                {
+                                    <span class="active"></span>
+                                }
+                                @for (int i = Convert.ToInt32(m.Rait); i < 5; i++)
+                                {
+                                    <span></span>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                @*<div class="hashtags"></div>*@
+                <div class="textDiv">
+                    @m.TaskTexst
+                </div>
+                <div class="img-wrap">
+                    @foreach (string str in m.Pictures)
+                    {
+                        if (str != "")
+                        {
+                            <img src="@str" class="img-fluid" alt="Responsive image" />
+                        }
+                    }
+                </div>
+                <div class="navbar navbar-expand-lg">
+                    <div class="navbar-collapse header-content">
+                        <ul class="navbar-nav">
+                            <li class="content-top"> @Html.ActionLink(strings[4], "Look", "Tasks", new { UserTaskId = m.TaskId }, new { @class = "btn btn-secondary" })</li>
+                        </ul>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <ul class="navbar-nav">
+                                <li class="score d-md-none">@strings[5]</li>
+                                <li class="rating-area list-inline-item">
+                                    @for (int i = 5; i > 0; i--)
+                                    {
+                                        if (i == m.UserRait)
+                                        {
+                                            <input type="radio" id="star @i @m.TaskId" name="rating @m.TaskId" value="5" checked onclick="sendRait(@m.TaskId,@i,@a)">
+                                            <label for="star @i @m.TaskId" title="@strings[5] «@i»"></label>
+                                        }
+                                        else
+                                        {
+                                            <input type="radio" id="star @i @m.TaskId" name="rating @m.TaskId" value="5" onclick="sendRait(@m.TaskId,@i,@a)">
+                                            <label for="star @i @m.TaskId" title="@strings[5] «@i»"></label>
+                                        }
+                                    }
+                                </li>
+                            </ul>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

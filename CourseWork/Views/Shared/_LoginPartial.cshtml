@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    bool a = true;
+    string[] Logout = new string[] { "Выход", "Регистрация", "Выполнить вход", "Мои задачи" };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        Logout = a ? Logout : new string[] { "Logout", "Registration", "Log in", "My tasks" };
+    }
+}
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @if (@a)
+                {
+                    <div class="nav-link">Здравствуйте  @User.Identity.GetUserName() !</div>
+                }
+                else
+                {
+            <div class="nav-link">Hello  @User.Identity.GetUserName() !</div>
+                }
+            </li>
+            <li><a class = "nav-link" href="javascript:document.getElementById('logoutForm').submit()">@Logout[0]</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @*<li class="nav-item active">@Html.ActionLink(Logout[1], "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>*@
+        <li class="nav-item active">@Html.ActionLink(Logout[2], "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+    </ul>
+}

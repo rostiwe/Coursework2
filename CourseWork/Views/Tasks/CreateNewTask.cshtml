@@ -1,0 +1,82 @@
+﻿@model CourseWork.Models.TaskCreateModel
+
+@{
+    bool a = true;
+    string[] Logout = new string[] { "Выход", "Регистрация", "Выполнить вход", "Мои задачи" };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        Logout = a ? Logout : new string[] { "Logout", "Registration", "Log in", "My tasks" };
+    }
+    ViewBag.Title = "CreateNewTask";
+    Model.Pictures.Add("");
+    Model.Pictures.Add("");
+    Model.Pictures.Add("");
+}
+<h2>CreateNewTask</h2>
+@using (Html.BeginForm("CreateNewTask", "Tasks", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>UserTask</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TaskTexst">TaskTexst</label>
+            <div class="col-md-10">
+                <textarea class="form-control" data-val="true" data-val-required="Требуется поле TaskTexst." id="TaskTexst" name="TaskTexst" type="text" value="" ></textarea>
+                <span class="field-validation-valid text-danger" data-valmsg-for="TaskTexst" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="ans1"></label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-required="Требуется поле ans1." id="ans1" name="ans1" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="ans1" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="ans2">ans2</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="ans2" name="ans2" type="text" value="asdas" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="ans2" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="ans3">ans3</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="ans3" name="ans3" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="ans3" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input class="form-control d-none text-box single-line" id="Pictures_0_" name="Pictures[0]" type="text" value="" /><input class="form-control d-none text-box single-line" id="Pictures_1_" name="Pictures[1]" type="text" value="" /><input class="form-control d-none text-box single-line" id="Pictures_2_" name="Pictures[2]" type="text" value="" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<script>
+    var a = @Html.Raw(Json.Encode(Model))
+    function OneLitleF() {
+        console.log(a)
+    }
+
+</script>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

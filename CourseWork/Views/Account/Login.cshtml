@@ -1,0 +1,27 @@
+﻿@using CourseWork.Models
+@model LoginViewModel
+@{
+    bool a = true;
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+    }
+    if (a)
+    {
+        ViewBag.Title = "Выполнить вход";
+    }
+    else
+    {
+        ViewBag.Title = "Log in";
+    }
+}
+
+<h2>@ViewBag.Title.</h2>
+<div class="col-md-4">
+    <section id="socialLoginForm">
+        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+    </section>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

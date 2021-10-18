@@ -1,0 +1,26 @@
+﻿
+@{
+    bool a = true;
+    string[] strings = new string[] { "Автор Ростислав Лыссенков", "Контакты" };
+    if (Context.Request.Cookies["LG"] != null)
+    {
+        a = Context.Request.Cookies["LG"].Value == "ru" ? true : false;
+        strings = a ? strings : new string[] { "Author Rostislav Lysenkov", "Contact"};
+    }
+}
+@{
+    ViewBag.Title = strings[1];
+}
+<div class="jumbotron">
+    <h1>@ViewBag.Title.</h1>
+    <address class="lead">
+        <strong>@strings[0]</strong>
+        <p>
+            <a class="btn btn-primary btn-lg" href="https://www.facebook.com/profile.php?id=100058233182885">Facebook</a>
+        </p>
+        <p>
+            <a class="btn btn-primary btn-lg" href="https://vk.com/id115949392">Vkontakte</a>
+        </p>        
+        <br />
+    </address>
+</div>
