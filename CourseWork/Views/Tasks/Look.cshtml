@@ -85,13 +85,14 @@
         </div>
         <div class="form-inline" id="Ans">
             <textarea class="form-control mr-sm-2" id="AnsText"></textarea>
-            <button class="btn btn-outline-light my-2 my-sm-0" onclick="">@strings[6]</button>
+            <button class="btn btn-primary btn-lg" onclick="CheckAns()">@strings[6]</button>
         </div>
     </div>
 
 </div>
 <script>
     function CheckAns() {
-        var str = $('AnsText').val();
+        var text1 = document.getElementById('AnsText').value;
+        console.log(text1)
     }
 </script>
