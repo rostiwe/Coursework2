@@ -8,6 +8,12 @@ using Microsoft.Owin.Security;
 
 namespace CourseWork.Models
 {
+    public class StringModel
+    { 
+        public int StringModelId { get; set; }
+        public string str { get; set; }
+    }
+
     public class LookModel
     {
         public int TaskId { get; set; }

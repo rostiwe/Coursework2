@@ -38,7 +38,7 @@ namespace CourseWork.Controllers
         public ActionResult Index()
         {
             string userId = User.Identity.GetUserId();
-            List<UserTask> userTasks = dbContext.UserTasks.Where(x => x.ApplicationUserId == userId).ToList();
+            List<UserTask> userTasks = dbContext.UserTasks.Where(x => x.ApplicationUserId == userId).OrderByDescending(x => x.Rait).ToList();
             List<TaskViewModel> TasksView = new List<TaskViewModel>();
             string userName = User.Identity.Name;
             foreach (UserTask t in userTasks)

@@ -1,4 +1,5 @@
 ﻿using CourseWork.Models;
+using Fissoft.EntityFramework.Fts;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace CourseWork.Controllers
         public ActionResult Index()
         {
             string userId = User.Identity.GetUserId();
-            List<UserTask> userTasks = dbContext.UserTasks.ToList();
+            List<UserTask> userTasks = dbContext.UserTasks.OrderByDescending(x => x.Rait).ToList();
             List<TaskViewModel> TasksView = new List<TaskViewModel>();
             foreach (UserTask t in userTasks)
             {
@@ -49,7 +50,40 @@ namespace CourseWork.Controllers
 
             return View();
         }
+        
+        [HttpPost]
+        public ActionResult search(string SearchString)
+        {
+            string userId = User.Identity.GetUserId();
+            var text = FullTextSearchModelUtil.Contains(SearchString);
+            //db.Tables.Where(c => c.Fullname.Contains(text));
+            List<UserTask> userTasks = dbContext.UserTasks.Where(x=>x.TaskTexst.Contains(SearchString)).OrderByDescending(x=>x.Rait).ToList();
+            List<TaskViewModel> TasksView = new List<TaskViewModel>();
+            foreach (UserTask t in userTasks)
+            {
+                int? rait = 0;
+                try
+                {
+                    rait = dbContext.TasksRaits.Where(x => x.UserTaskId == t.UserTaskId).Where(x => x.ApplicationUserId == userId).Select(x => x.Rait).First();
+                }
+                catch
+                {
+                    rait = 0;
+                }
+                TasksView.Add(new TaskViewModel()
+                {
+                    TaskId = t.UserTaskId,
+                    CreaterName = /*UserManager.FindById(t.ApplicationUserId).UserName*/ dbContext.Users.Find(t.ApplicationUserId).UserName,
+                    Date = t.Date,
+                    Rait = t.Rait,
+                    TaskTexst = t.TaskTexst,
+                    Pictures = dbContext.Pictures.Where(x => x.UserTaskId == t.UserTaskId).Select(x => x.Search).ToList(),
+                    UserRait = (int)rait
+                });
+            }
 
+            return View(TasksView);
+        }
         public ActionResult Contact()
         {
             return View();
