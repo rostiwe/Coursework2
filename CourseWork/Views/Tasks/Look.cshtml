@@ -56,8 +56,8 @@
             <div class="navbar navbar-expand-lg">
                 <div class="navbar-collapse header-content">
                     @*<ul class="navbar-nav">
-                        <li class="content-top"> @Html.ActionLink(strings[4], "Look", "Tasks", new { UserTaskId = Model.TaskId }, new { @class = "btn btn-secondary" })</li>
-                    </ul>*@
+                            <li class="content-top"> @Html.ActionLink(strings[4], "Look", "Tasks", new { UserTaskId = Model.TaskId }, new { @class = "btn btn-secondary" })</li>
+                        </ul>*@
                     @if (Request.IsAuthenticated)
                     {
                         <ul class="navbar-nav">
@@ -85,14 +85,42 @@
         </div>
         <div class="form-inline" id="Ans">
             <textarea class="form-control mr-sm-2" id="AnsText"></textarea>
-            <button class="btn btn-primary btn-lg" onclick="CheckAns()">@strings[6]</button>
+            <button class="btn btn-primary btn-lg" onclick="CheckAns(@Model.TaskId,@a)">@strings[6]</button>
         </div>
     </div>
 
 </div>
 <script>
-    function CheckAns() {
+    function CheckAns(id,l) {
         var text1 = document.getElementById('AnsText').value;
         console.log(text1)
+        var data = {
+            ans: text1,
+            TaskId: id
+        };
+        $.ajax({
+            type: "POST",
+            url: "/Tasks/AnsChk",
+            data: data,
+            success: function (string) {
+                if (!l) {
+                    if (string == '0')
+                        alert('Right!');
+                    else alert('not right!');
+                }
+                else {
+                    if (string == '0')
+                        alert('Верно!');
+                    else alert('Не верно!');
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest)
+                console.log(textStatus)
+                console.log(errorThrown)
+            }
+
+        });
     }
 </script>

@@ -170,6 +170,15 @@ namespace CourseWork.Controllers
             dbContext.UserTasks.Find(taskId).Rait = Math.Round((decimal)RatingAverage,2);
             dbContext.SaveChanges();
         }
+        public string AnsChk(string ans, int TaskId)
+        {
+            if (ans == null)
+                return "1";
+            UserTask tasks = dbContext.UserTasks.Find(TaskId);
+            if (ans == tasks.ans1 || ans == tasks.ans2 || ans == tasks.ans3)
+                return "0";
+            return "1";
+        }
         public ActionResult Look(int UserTaskId)
         {
             string userId = User.Identity.GetUserId();
